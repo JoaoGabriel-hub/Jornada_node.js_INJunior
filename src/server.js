@@ -1,11 +1,25 @@
 const express = require('express');
+const { v4:uuidv4 } = require('uuid');
 const app = express();
-const port = 3000;
 
-app.get('/', (req,res)=>{
-    res.send('Hello, Flamengo and World, Node.Js ---- testando!!');
-})
+app.use(express.json());
 
-app.listen(port, ()=>{
-    console.log("Nosso servidor está rodando na porta", port);
-})
+const usersBase = [];
+
+app.post('/users', (req, res) => {
+    const { username } = req.body;
+    const id = uuidv4();
+
+    usersBase.push({
+        id,
+        username,
+        isAdmin: false
+    });
+
+    return res.status(201).json(usersBase);
+
+});
+
+app.listen(3333, ()=>{
+    console.log("Nosso servidor está rodando.");
+});
