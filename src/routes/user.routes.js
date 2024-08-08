@@ -6,70 +6,33 @@ const userRoutes = express.Router();
 const checkUserExists = require('../middlewares/checkUserExistsMiddleware');
 const findUser = require('../middlewares/findUserMiddleware');
 
+
+//Inclusão dos controllers
+const userController = require('../controllers/userController');
+
+
 // Criar usuário
-userRoutes.post('/', checkUserExists, (req, res) => {
-    const { username } = req.body;
-    const id = uuidv4();
-
-    usersBase.push({
-        id,
-        username,
-        isAdmin: false
-    });
-
-    return res.status(201).json(usersBase);
-});
+userRoutes.post('/', checkUserExists, (req, res) => userController.createUser(req, res));
 
 
 //Listar usuários
-userRoutes.get('/', (req, res)=>{
-    return res.status(200).json(usersBase);
-});
+userRoutes.get('/', (req, res) => userController.listUsers(req, res));
 
 
 //Buscar user pelo id (route params)
-userRoutes.get('/:id', findUser, (req, res)=> {
-    const user = req.user;
-    return res.status(200).json(user);
-});
+userRoutes.get('/:id', findUser, (req, res) => userController.getUser(req, res));
 
 
 //Atualizar usuário
-userRoutes.patch('/:id', findUser, (req, res)=>{
-    const user = req.user;
-
-    const { username} = req.body;
-    user.username = username;
-
-    res.status(200).json(user);
-});
+userRoutes.patch('/:id', findUser, (req, res) => userController.updateUser(req, res));
 
 
 //Tornar um usuário admin
-userRoutes.patch('/admin/:id', findUser, (req, res)=>{
-    const user = req.user;
-
-    if(user.isAdmin === true){
-        return res.status(400).json({error: "User is already a admin!"});
-    }
-
-    user.isAdmin = true;
-    return res.status(200).json(user);
-})
+userRoutes.patch('/admin/:id', findUser, (req, res) => userController.makeUserAdmin(req, res));
 
 
 //Deletar usuário
-userRoutes.delete('/:id', findUser, (req, res)=>{
-    const user = req.user;
+userRoutes.delete('/:id', findUser, (req, res) => userController.deleteUser(req, res));
 
-    const index = usersBase.indexOf(user);
-
-    if (index === -1){
-        return res.status(404).json({error: "User not found!"});
-    }
-
-    usersBase.splice(index, 1);
-    return res.status(204).send();
-})
 
 module.exports = userRoutes;

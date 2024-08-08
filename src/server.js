@@ -8,8 +8,6 @@ app.use(express.json());
 
 app.use(router);
 
-const usersBase = [];
-
 app.listen(3333, ()=>{
     console.log("Nosso servidor está rodando.");
 });
