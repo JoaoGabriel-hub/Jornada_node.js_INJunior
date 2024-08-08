@@ -61,8 +61,23 @@ app.patch('/users/:id', (req, res)=>{
 });
 
 
+//Tornar um usuário admin
+app.patch('/users/admin/:id', (req, res)=>{
+    //Find user
+    const { id } = req.params;
+    const user = usersBase.find((user)=>user.id === id);
 
+    if(!user){
+        return res.status(404).json({error: "User not found!"});
+    }
 
+    if(user.isAdmin === true){
+        return res.status(400).json({error: "User is already a admin!"});
+    }
+
+    user.isAdmin = true;
+    return res.status(200).json(user);
+})
 
 
 
