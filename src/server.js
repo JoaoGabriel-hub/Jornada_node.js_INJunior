@@ -19,6 +19,20 @@ function checkUserExists(req, res, next){
     return next();
 }
 
+function findUser(req, res, next){
+    //Find user
+    const { id } = req.params;
+    const user = usersBase.find((user)=>user.id === id);
+
+    if(!user){
+        return res.status(404).json({error: "User not found!"});
+    }
+
+    req.user = user;
+
+    return next();
+}
+
 
 // Criar usuário
 app.post('/users', checkUserExists, (req, res) => {
@@ -34,31 +48,23 @@ app.post('/users', checkUserExists, (req, res) => {
     return res.status(201).json(usersBase);
 });
 
+
 //Listar usuários
 app.get('/users', (req, res)=>{
     return res.status(200).json(usersBase);
 });
 
+
 //Buscar user pelo id (route params)
-app.get('/users/:id', (req, res)=> {
-    const { id } = req.params;
-
-    const user = usersBase.find((user)=>user.id === id);
-
-    if (user){
-        return res.status(200).json(user);
-    }
+app.get('/users/:id', findUser, (req, res)=> {
+    const user = req.user;
+    return res.status(200).json(user);
 });
 
-//Atualizar usuário
-app.patch('/users/:id', (req, res)=>{
-    //Find user
-    const { id } = req.params;
-    const user = usersBase.find((user)=>user.id === id);
 
-    if(!user){
-        return res.status(404).json({error: "User not found!"});
-    }
+//Atualizar usuário
+app.patch('/users/:id', findUser, (req, res)=>{
+    const user = req.user;
 
     const { username} = req.body;
     user.username = username;
@@ -68,14 +74,8 @@ app.patch('/users/:id', (req, res)=>{
 
 
 //Tornar um usuário admin
-app.patch('/users/admin/:id', (req, res)=>{
-    //Find user
-    const { id } = req.params;
-    const user = usersBase.find((user)=>user.id === id);
-
-    if(!user){
-        return res.status(404).json({error: "User not found!"});
-    }
+app.patch('/users/admin/:id', findUser, (req, res)=>{
+    const user = req.user;
 
     if(user.isAdmin === true){
         return res.status(400).json({error: "User is already a admin!"});
@@ -87,14 +87,8 @@ app.patch('/users/admin/:id', (req, res)=>{
 
 
 //Deletar usuário
-app.delete('/users/:id', (req, res)=>{
-    //Find user
-    const { id } = req.params;
-    const user = usersBase.find((user)=>user.id === id);
-
-    if(!user){
-        return res.status(404).json({error: "User not found!"});
-    }
+app.delete('/users/:id', findUser, (req, res)=>{
+    const user = req.user;
 
     const index = usersBase.indexOf(user);
 
