@@ -10,6 +10,12 @@ app.post('/users', (req, res) => {
     const { username } = req.body;
     const id = uuidv4();
 
+    const userAlreadyExists = usersBase.some((user)=>user.username === username);
+
+    if (userAlreadyExists) {
+        return res.status(400).json({error: "User already exists!"});
+    }
+
     usersBase.push({
         id,
         username,
