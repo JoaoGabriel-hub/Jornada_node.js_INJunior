@@ -80,6 +80,26 @@ app.patch('/users/admin/:id', (req, res)=>{
 })
 
 
+//Deletar usuário
+app.delete('/users/:id', (req, res)=>{
+    //Find user
+    const { id } = req.params;
+    const user = usersBase.find((user)=>user.id === id);
+
+    if(!user){
+        return res.status(404).json({error: "User not found!"});
+    }
+
+    const index = usersBase.indexOf(user);
+
+    if (index === -1){
+        return res.status(404).json({error: "User not found!"});
+    }
+
+    usersBase.splice(index, 1);
+    return res.status(204).send();
+})
+
 
 app.listen(3333, ()=>{
     console.log("Nosso servidor está rodando.");
