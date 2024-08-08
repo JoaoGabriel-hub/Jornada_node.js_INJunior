@@ -6,17 +6,24 @@ app.use(express.json());
 
 const usersBase = [];
 
-
-// Criar usuário e checar se ele já existe
-app.post('/users', (req, res) => {
+//Middlewares
+function checkUserExists(req, res, next){
     const { username } = req.body;
-    const id = uuidv4();
-
+    
     const userAlreadyExists = usersBase.some((user)=>user.username === username);
 
     if (userAlreadyExists) {
         return res.status(400).json({error: "User already exists!"});
     }
+
+    return next();
+}
+
+
+// Criar usuário
+app.post('/users', checkUserExists, (req, res) => {
+    const { username } = req.body;
+    const id = uuidv4();
 
     usersBase.push({
         id,
@@ -25,7 +32,6 @@ app.post('/users', (req, res) => {
     });
 
     return res.status(201).json(usersBase);
-
 });
 
 //Listar usuários
