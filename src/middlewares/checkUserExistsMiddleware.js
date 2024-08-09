@@ -1,16 +1,24 @@
-//Inclusão dos controllers
-const userController = require('../controllers/userController');
+const User = require("../models/user");
 
-function checkUserExists(req, res, next){
-    const { username } = req.body;
+async function checkUserExists(req, res, next){
+    try {
+        const { username } = req.body;
     
-    const userAlreadyExists = userController.usersBase.some((user)=>user.username === username);
+        const userAlreadyExists = await User.findAll({
+            where: {
+                username,
+            }
+        })
 
-    if (userAlreadyExists) {
-        return res.status(400).json({error: "User already exists!"});
+        if (userAlreadyExists) {
+            return res.status(400).json({error: "User already exists!"});
+        }
+
+        return next();
+        
+    } catch(error) {
+        return response(500).json({error: "Erro ao checar se o usuário existe."});
     }
-
-    return next();
 }
 
 module.exports = checkUserExists;
