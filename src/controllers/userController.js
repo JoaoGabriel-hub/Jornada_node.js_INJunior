@@ -1,19 +1,22 @@
 const { v4:uuidv4 } = require('uuid');
+const User = require('../models/user');
 
 const usersBase = [];
 
 //Criar um usuário
-function createUser(request, response){
-    const { username } = request.body;
-    const id = uuidv4();
+async function createUser(request, response){
+    try {
+        const { username } = request.body;
 
-    usersBase.push({
-        id,
-        username,
-        isAdmin: false
-    });
+        const user = User.create({
+            username
+        })
+    
+        return response.status(201).json(usersBase);
 
-    return response.status(201).json(usersBase);
+    } catch (error) {
+        return response.status(400).json({error: "Não foi possível criar o usuário."});
+    }
 };
 
 //Listar usuários
