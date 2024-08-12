@@ -11,7 +11,7 @@ async function createUser(request, response){
             username
         })
     
-        return response.status(201).json(usersBase);
+        return response.status(201).json(usersBase.toJson());
 
     } catch (error) {
         return response.status(400).json({error: "Não foi possível criar o usuário."});
@@ -20,13 +20,13 @@ async function createUser(request, response){
 
 //Listar usuários
 function listUsers(request, response){
-    return response.status(200).json(usersBase);
+    return response.status(200).json(usersBase.toJson());
 }
 
 //Buscar usuário pelo id
 function getUser(request, response){
     const user = request.user;
-    return response.status(200).json(user);
+    return response.status(200).json(user.toJson());
 }
 
 //Atualizar usuário
@@ -36,7 +36,7 @@ function updateUser(request, response){
     const { username} = request.body;
     user.username = username;
 
-    response.status(200).json(user);
+    response.status(200).json(user.toJson());
 }
 
 //Tornar usuário admin
@@ -48,7 +48,7 @@ function makeUserAdmin(request, response){
     }
 
     user.isAdmin = true;
-    return response.status(200).json(user);
+    return response.status(200).json(user.toJson());
 }
 
 //Deletar usuário
