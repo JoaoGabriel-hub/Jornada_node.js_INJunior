@@ -4,7 +4,7 @@ async function checkUserExists(req, res, next){
     try {
         const { username } = req.body;
     
-        const userAlreadyExists = await User.findAll({
+        const userAlreadyExists = await User.findOne({
             where: {
                 username,
             }

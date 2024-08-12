@@ -11,7 +11,7 @@ async function createUser(request, response){
             username
         })
     
-        return response.status(201).json(usersBase.toJson());
+        return response.status(201).json(usersBase.toJSON());
 
     } catch (error) {
         return response.status(400).json({error: "Não foi possível criar o usuário."});
@@ -20,13 +20,13 @@ async function createUser(request, response){
 
 //Listar usuários
 function listUsers(request, response){
-    return response.status(200).json(usersBase.toJson());
+    return response.status(200).json(usersBase.toJSON());
 }
 
 //Buscar usuário pelo id
 function getUser(request, response){
     const user = request.user;
-    return response.status(200).json(user.toJson());
+    return response.status(200).json(user.toJSON());
 }
 
 //Atualizar usuário
@@ -37,7 +37,7 @@ async function updateUser(request, response){
         const { username} = request.body;
         const userUpdated = await user.update({ username });
 
-        response.status(200).json(userUpdated.toJson());
+        response.status(200).json(userUpdated.toJSON());
         
     } catch (error) {
         return response.status(500).json({ error: "Erro ao atualizar o usuário!" });
@@ -55,7 +55,7 @@ async function makeUserAdmin(request, response){
         }
 
         const userUpdated = await user.update({ isAdmin: true });
-        return response.status(200).json(userUpdated.toJson());
+        return response.status(200).json(userUpdated.toJSON());
         
     } catch (error) {
         return response.status(500).json({ error: "Erro ao tornar usuário Admin!" })
