@@ -30,39 +30,51 @@ function getUser(request, response){
 }
 
 //Atualizar usuário
-function updateUser(request, response){
-    const user = request.user;
+async function updateUser(request, response){
+    try {
+        const user = request.user;
 
-    const { username} = request.body;
-    user.username = username;
+        const { username} = request.body;
+        const userUpdated = await user.update({ username });
 
-    response.status(200).json(user.toJson());
+        response.status(200).json(userUpdated.toJson());
+        
+    } catch (error) {
+        return response.status(500).json({ error: "Erro ao atualizar o usuário!" });
+    }
+    
 }
 
 //Tornar usuário admin
-function makeUserAdmin(request, response){
-    const user = request.user;
+async function makeUserAdmin(request, response){
+    try {
+        const user = request.user;
 
-    if(user.isAdmin === true){
-        return response.status(400).json({error: "User is already a admin!"});
+        if(user.isAdmin === true){
+            return response.status(400).json({error: "User is already a admin!"});
+        }
+
+        const userUpdated = await user.update({ isAdmin: true });
+        return response.status(200).json(userUpdated.toJson());
+        
+    } catch (error) {
+        return response.status(500).json({ error: "Erro ao tornar usuário Admin!" })
     }
-
-    user.isAdmin = true;
-    return response.status(200).json(user.toJson());
+    
 }
 
 //Deletar usuário
-function deleteUser(request, response){
-    const user = request.user;
+async function deleteUser(request, response){
+    try {
+        const user = request.user;
 
-    const index = usersBase.indexOf(user);
+        await user.destroy();
 
-    if (index === -1){
-        return response.status(404).json({error: "User not found!"});
+        return response.status(204).send();
+    } catch (error) {
+        return response.status(500).json({ error: "Erro ao deletar usuário!" })
     }
-
-    usersBase.splice(index, 1);
-    return response.status(204).send();
+    
 }
 
 module.exports = {
