@@ -6,7 +6,7 @@ async function findUser(req, res, next){
     //Find user
     const { id } = req.params;
 
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(id);
 
     if(!user){
         return res.status(404).json({error: "User not found!"});
