@@ -1,43 +1,47 @@
 const User = require('../models/user');
 
-const usersBase = [];
-
 //Criar um usuário
 async function createUser(request, response){
     try {
         const { username } = request.body;
 
         const user = User.create({
-            username
+            username,
         })
     
-        return response.status(201).json(usersBase.toJSON());
-
+        return response.status(201).json(user);
+        
     } catch (error) {
         return response.status(400).json({error: "Não foi possível criar o usuário."});
     }
 };
 
 //Listar usuários
-function listUsers(request, response){
-    return response.status(200).json(usersBase.toJSON());
+async function listUsers(request, response){
+    try {
+        const users = await User.findAll(); 
+        return response.status(200).json(users);
+    } catch (error) {
+        return response.status(500).json({ error: "Erro ao listar os usuários!" });
+    }
 }
+
 
 //Buscar usuário pelo id
 function getUser(request, response){
     const user = request.user;
-    return response.status(200).json(user.toJSON());
+    return response.status(200).json(user);
 }
 
 //Atualizar usuário
 async function updateUser(request, response){
     try {
-        const user = request.user;
+        const { username } = request.body;
+        const { user } = request;
 
-        const { username} = request.body;
         const userUpdated = await user.update({ username });
 
-        response.status(200).json(userUpdated.toJSON());
+        return response.status(200).json(userUpdated);
         
     } catch (error) {
         return response.status(500).json({ error: "Erro ao atualizar o usuário!" });
@@ -55,7 +59,7 @@ async function makeUserAdmin(request, response){
         }
 
         const userUpdated = await user.update({ isAdmin: true });
-        return response.status(200).json(userUpdated.toJSON());
+        return response.status(200).json(userUpdated);
         
     } catch (error) {
         return response.status(500).json({ error: "Erro ao tornar usuário Admin!" })
@@ -83,6 +87,5 @@ module.exports = {
     getUser,
     updateUser,
     makeUserAdmin,
-    deleteUser,
-    usersBase
+    deleteUser
 }
