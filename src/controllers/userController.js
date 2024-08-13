@@ -28,9 +28,13 @@ async function listUsers(request, response){
 
 
 //Buscar usuário pelo id
-function getUser(request, response){
-    const user = request.user;
-    return response.status(200).json(user);
+async function getUser(request, response){
+    try {
+        const user = await request.user;
+        return response.status(200).json(user);
+    } catch (error) {
+        return response.status(500).json({ error: "Erro ao listar o usuário!" });
+    }
 }
 
 //Atualizar usuário
