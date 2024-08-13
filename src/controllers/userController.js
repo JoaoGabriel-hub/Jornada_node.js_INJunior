@@ -5,12 +5,12 @@ async function createUser(request, response){
     try {
         const { username } = request.body;
 
-        const user = User.create({
+        const user = await User.create({
             username,
         })
     
         return response.status(201).json(user);
-        
+
     } catch (error) {
         return response.status(400).json({error: "Não foi possível criar o usuário."});
     }
